@@ -115,4 +115,21 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Internal Notification Recipients
+    |--------------------------------------------------------------------------
+    |
+    | Extra addresses copied on internal alerts (a new registration waiting
+    | for review, a client upload landing). Every user holding a non-client
+    | role is notified regardless — these are additions, e.g. a shared
+    | inbox. Comma-separated.
+    |
+    */
+
+    'admin_addresses' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('MAIL_ADMIN_ADDRESSES', ''))
+    ))),
+
 ];

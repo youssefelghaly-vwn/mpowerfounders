@@ -36,6 +36,23 @@
             @endforeach
           </div>
         @endforeach
+
+        {{-- Account column, built here rather than passed in: the same
+             footer ships on the marketing site and the auth pages. --}}
+        <div class="footer__col">
+          <div class="footer__col-title">Account</div>
+          @auth
+            <a href="{{ auth()->user()->dashboardUrl() }}">Dashboard</a>
+            @if (auth()->user()->isClient())
+              <a href="{{ route('portal.projects.index') }}">My projects</a>
+              <a href="{{ route('portal.projects.create') }}">New upload</a>
+            @endif
+          @else
+            <a href="{{ route('login') }}">Sign in</a>
+            <a href="{{ route('register') }}">Apply for access</a>
+            <a href="{{ route('password.request') }}">Forgot password</a>
+          @endauth
+        </div>
       </div>
     </div>
     <div class="footer__bottom">

@@ -25,10 +25,23 @@
                 @forelse ($roles as $role)
                     <tr>
                         <td class="px-6 py-4">
-                            <div class="font-medium text-slate-900">{{ $role->name }}</div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium text-slate-900">{{ $role->name }}</span>
+                                @if ($role->is_superadmin)
+                                    <span class="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                                        Super admin
+                                    </span>
+                                @endif
+                            </div>
                             <div class="text-xs text-slate-400">{{ $role->description }}</div>
                         </td>
-                        <td class="px-6 py-4 text-slate-600">{{ $role->permissions_count }}</td>
+                        <td class="px-6 py-4 text-slate-600">
+                            @if ($role->is_superadmin)
+                                <span class="text-xs font-medium text-amber-600">All (bypasses permissions)</span>
+                            @else
+                                {{ $role->permissions_count }}
+                            @endif
+                        </td>
                         <td class="px-6 py-4 text-slate-600">{{ $role->users_count }}</td>
                         @can('roles.manage')
                             <td class="px-6 py-4 text-right space-x-3">

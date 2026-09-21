@@ -321,10 +321,18 @@
     <h2 class="cta-final__title reveal">Let's make your <span class="accent">next clip</span><br>your best-performing one.</h2>
     <p class="cta-final__sub reveal">Applications are reviewed by the team, not a form. We take a limited number of founders per quarter.</p>
     <div class="cta-final__actions reveal">
-      <a href="#" class="btn-gold lg" data-cursor="hover">Apply as a founder
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
-      </a>
-      <a href="#" class="btn-ghost lg" data-cursor="hover">Talk to the team</a>
+      {{-- The apply funnel actually lands somewhere now: registration
+           creates a pending account for the team to review. --}}
+      @auth
+        <a href="{{ auth()->user()->dashboardUrl() }}" class="btn-gold lg" data-cursor="hover">Go to your dashboard
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      @else
+        <a href="{{ route('register') }}" class="btn-gold lg" data-cursor="hover">Apply as a founder
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+        <a href="{{ route('login') }}" class="btn-ghost lg" data-cursor="hover">Sign in</a>
+      @endauth
     </div>
   </div>
 </section>

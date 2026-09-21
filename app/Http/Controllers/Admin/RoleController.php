@@ -13,9 +13,7 @@ use Illuminate\View\View;
 
 class RoleController extends Controller
 {
-    public function __construct(private readonly RoleService $roles)
-    {
-    }
+    public function __construct(private readonly RoleService $roles) {}
 
     public function index(): View
     {
@@ -25,14 +23,16 @@ class RoleController extends Controller
     public function create(): View
     {
         return view('admin.roles.create', [
-            'role' => new Role(),
+            'role' => new Role,
             'permissions' => Permission::orderBy('group')->orderBy('name')->get(),
         ]);
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        $this->roles->create($request->validated());
+        // The actor is passed through because only a super admin may hand
+        // out the super admin flag — see RoleService.
+        $this->roles->create($request->validated(), $request->user());
 
         return redirect()->route('admin.roles.index')->with('status', 'Role created.');
     }
@@ -47,7 +47,7 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
-        $this->roles->update($role, $request->validated());
+        $this->roles->update($role, $request->validated(), $request->user());
 
         return redirect()->route('admin.roles.index')->with('status', 'Role updated.');
     }

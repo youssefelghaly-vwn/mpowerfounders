@@ -203,6 +203,9 @@
     align-items:center;
     gap:14px;
   }
+  /* the log-out control is a form so it can POST; keep it from breaking
+     the row the way a block-level <form> would */
+  .navbar__logout{display:flex;}
   .btn-gold{
     font-family:var(--font-mono);
     font-size:12.5px;

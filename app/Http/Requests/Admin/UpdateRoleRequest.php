@@ -20,6 +20,9 @@ class UpdateRoleRequest extends FormRequest
                 Rule::unique('roles', 'name')->ignore($this->route('role')),
             ],
             'description' => ['nullable', 'string', 'max:255'],
+            // Ignored unless the signed-in user is themselves a super
+            // admin; RoleService decides, not the form.
+            'is_superadmin' => ['nullable', 'boolean'],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['integer', 'exists:permissions,id'],
         ];

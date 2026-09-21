@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
+    // Where registration lands: sign-up creates a pending account, so there
+    // is no session to send anywhere yet.
+    Route::get('register/pending', [RegisteredUserController::class, 'pending'])->name('register.pending');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);

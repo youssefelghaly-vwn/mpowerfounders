@@ -17,7 +17,7 @@
     ['href' => '/#metrics', 'label' => 'Metrics'],
     ['href' => '/#proof', 'label' => 'Proof'],
     ['href' => '/#apply', 'label' => 'Apply'],
-]" nav-cta-href="/#apply">
+]" :nav-cta-href="route('register')">
 
     <x-slot:styles>
         .auth-section{
@@ -69,7 +69,8 @@
             color:var(--graphite-dark);
             margin-bottom:8px;
         }
-        .auth-field input{
+        .auth-field input,
+        .auth-field textarea{
             width:100%;
             padding:12px 14px;
             border:1px solid var(--paper-line);
@@ -80,10 +81,15 @@
             color:var(--ink);
             transition:border-color .3s var(--ease), background .3s var(--ease);
         }
-        .auth-field input:focus{
+        .auth-field input:focus,
+        .auth-field textarea:focus{
             outline:none;
             border-color:var(--gold);
             background:var(--paper);
+        }
+        .auth-field textarea{
+            resize:vertical;
+            line-height:1.5;
         }
         .auth-error{
             margin-top:6px;

@@ -38,4 +38,10 @@ class RoleRepository
     {
         $role->permissions()->sync($permissionIds);
     }
+
+    /** How many other roles still carry the super admin flag. */
+    public function otherSuperAdminCount(Role $role): int
+    {
+        return Role::superAdmin()->whereKeyNot($role->getKey())->count();
+    }
 }
