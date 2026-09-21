@@ -26,10 +26,26 @@
     @endforeach
   </div>
 
+  {{--
+      Account links. Kept inside the component rather than passed in by
+      every caller, so the marketing site and the auth pages both get a
+      way in and out without the homepage having to know about routing.
+  --}}
   <div class="navbar__cta">
-    <a href="{{ $ctaHref }}" class="btn-gold" data-cursor="hover">{{ $ctaLabel }}
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
-    </a>
+    @auth
+      <form method="POST" action="{{ route('logout') }}" class="navbar__logout">
+        @csrf
+        <button type="submit" class="navbar__link" data-cursor="hover">Log out</button>
+      </form>
+      <a href="{{ auth()->user()->dashboardUrl() }}" class="btn-gold" data-cursor="hover">Dashboard
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      </a>
+    @else
+      <a href="{{ route('login') }}" class="navbar__link" data-cursor="hover">Sign in</a>
+      <a href="{{ $ctaHref }}" class="btn-gold" data-cursor="hover">{{ $ctaLabel }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      </a>
+    @endauth
     <button class="navbar__burger" id="burgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
@@ -39,6 +55,18 @@
   @foreach ($links as $link)
     <a href="{{ $link['href'] }}" class="mobile-nav__link">{{ $link['label'] }}</a>
   @endforeach
+
+  @auth
+    <a href="{{ auth()->user()->dashboardUrl() }}" class="mobile-nav__link">Dashboard</a>
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class="mobile-nav__link" style="width:100%;text-align:left;">Log out</button>
+    </form>
+  @else
+    <a href="{{ route('login') }}" class="mobile-nav__link">Sign in</a>
+    <a href="{{ route('register') }}" class="mobile-nav__link">Apply for access</a>
+  @endauth
+
   <div class="mobile-nav__foot">MPOWER FOUNDERS &mdash; Est. 2026</div>
 </div>
 
@@ -80,6 +108,9 @@
   var burger = document.getElementById('burgerBtn');
   var closeBtn = document.getElementById('mobileClose');
   var mobileLinks = mobileNav ? mobileNav.querySelectorAll('.mobile-nav__link') : [];
+  /* the logout control is a <button class="mobile-nav__link"> inside a
+     form, so it is picked up by the same selector and animates with the
+     rest — nothing else to do here. */
 
   function openMobile(){
     mobileNav.classList.add('is-open');

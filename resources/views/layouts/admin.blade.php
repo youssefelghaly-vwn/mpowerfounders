@@ -87,8 +87,26 @@
             @endforeach
         </nav>
 
-        <div class="px-6 py-4 border-t border-slate-800 text-xs text-slate-500">
-            Signed in as {{ auth()->user()->name ?? 'Guest' }}
+        <div class="border-t border-slate-800 px-3 py-4 space-y-1">
+            {{-- Ways out of the panel. The portal link only appears for
+                 someone who actually holds the client role, since that is
+                 what /portal is gated on. --}}
+            <a href="{{ url('/') }}" class="block rounded-lg px-3 py-2 text-xs font-medium text-slate-400 transition hover:bg-slate-800 hover:text-white">
+                View public site
+            </a>
+
+            @if (auth()->user()->isClient())
+                <a href="{{ route('portal.dashboard') }}" class="block rounded-lg px-3 py-2 text-xs font-medium text-slate-400 transition hover:bg-slate-800 hover:text-white">
+                    Client portal
+                </a>
+            @endif
+
+            <p class="px-3 pt-2 text-xs text-slate-500">
+                Signed in as {{ auth()->user()->name ?? 'Guest' }}
+                @if (auth()->user()?->isSuperAdmin())
+                    <span class="mt-1 block text-[10px] font-semibold uppercase tracking-wide text-amber-400">Super admin</span>
+                @endif
+            </p>
         </div>
     </aside>
 

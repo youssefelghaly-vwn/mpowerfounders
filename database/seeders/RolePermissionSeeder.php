@@ -30,9 +30,17 @@ class RolePermissionSeeder extends Seeder
             Permission::updateOrCreate(['slug' => $permission['slug']], $permission);
         }
 
+        // Flagged super admin: holders bypass the permission tables
+        // entirely, so anything added to the app later is reachable without
+        // a seeder run. The full permission sync is kept anyway, so the
+        // role still means something if the flag is ever removed.
         $admin = Role::updateOrCreate(
             ['slug' => 'admin'],
-            ['name' => 'Admin', 'description' => 'Full access to the admin panel.']
+            [
+                'name' => 'Admin',
+                'description' => 'Full access to the admin panel.',
+                'is_superadmin' => true,
+            ]
         );
 
         $admin->permissions()->sync(Permission::pluck('id'));

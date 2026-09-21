@@ -113,6 +113,20 @@ class User extends Authenticatable
         return $this->roles()->where('slug', '!=', 'client')->exists();
     }
 
+    /**
+     * Where this user belongs once signed in. Staff land in the admin
+     * panel, clients in their own portal; anyone else (no role yet) has
+     * nowhere to be, so they go back to the sign-in page.
+     */
+    public function dashboardUrl(): string
+    {
+        return match (true) {
+            $this->isStaff() => route('admin.dashboard'),
+            $this->isClient() => route('portal.dashboard'),
+            default => route('login'),
+        };
+    }
+
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? ucfirst((string) $this->status);

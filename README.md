@@ -30,6 +30,23 @@ clients. Create it with:
 php artisan mpower:create-admin
 ```
 
+### Super admin
+
+A role can be flagged **super admin** (`roles.is_superadmin`). Anyone holding such a role passes
+every ability check in the app without a single permission being attached to it — the `Gate::before`
+hook in `AppServiceProvider` short-circuits, so new admin sections are reachable the moment they
+exist, with no permission to seed or tick.
+
+Two rules protect the flag:
+
+- **Only a super admin can grant it.** Someone with `roles.manage` but not the flag has the field
+  ignored — otherwise that permission would be a one-request escalation to full access.
+- **The last super admin role cannot be demoted or deleted**, so the panel can't be locked shut.
+
+The flag grants *abilities*, not role membership: a super admin still can't enter `/portal`, which is
+gated on holding the `client` role. The seeded `admin` role carries the flag (and still holds every
+permission, so it degrades sensibly if the flag is removed).
+
 ### Pipeline
 
 **Admin → Pipeline** manages the stages every project travels through. A stage is a database row,
@@ -126,6 +143,8 @@ and permissions screens.
 - `app/Policies` — `ProjectPolicy` and `ProjectMediaPolicy` gate the two audiences: staff by
   `projects.*` permission, clients to their own work.
 - Middleware aliases: `role`, `permission` (pre-existing) and `active` (account must be activated).
+- Navigation is covered by `tests/Feature/NavigationTest.php`, which enumerates every `admin.*.index`
+  route and fails if one is missing from the sidebar — an admin section can't ship unreachable.
 
 Permissions added for this feature: `pipeline.view`, `pipeline.manage`, `clients.view`,
 `clients.manage`, `projects.view`, `projects.manage`. A `producer` role bundles the production ones;

@@ -8,9 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserRoleService
 {
-    public function __construct(private readonly UserRepository $users)
-    {
-    }
+    public function __construct(private readonly UserRepository $users) {}
 
     public function list(): Collection
     {
@@ -25,6 +23,10 @@ class UserRoleService
     public function syncRoles(User $user, array $roleIds): User
     {
         $this->users->syncRoles($user, $roleIds);
+
+        // The super-admin answer is memoised per request; granting or
+        // revoking a role here changes it.
+        $user->forgetSuperAdminCache();
 
         return $user;
     }

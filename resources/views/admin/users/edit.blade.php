@@ -14,6 +14,13 @@
                                @checked($user->roles->pluck('id')->contains($role->id))
                                class="rounded-sm border-slate-300 text-amber-600 focus:ring-2 focus:ring-amber-500">
                         {{ $role->name }}
+                        @if ($role->is_superadmin)
+                            {{-- Worth spelling out: this one grant hands over
+                                 the whole admin panel. --}}
+                            <span class="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                                Super admin
+                            </span>
+                        @endif
                     </label>
                 @endforeach
             </div>

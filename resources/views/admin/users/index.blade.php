@@ -18,8 +18,9 @@
                         <td class="px-6 py-4 text-slate-600">{{ $user->email }}</td>
                         <td class="px-6 py-4">
                             @forelse ($user->roles as $role)
-                                <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700 mr-1">
-                                    {{ $role->name }}
+                                <span class="mr-1 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+                                             {{ $role->is_superadmin ? 'bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-600/30' : 'bg-amber-50 text-amber-700' }}">
+                                    {{ $role->name }}@if ($role->is_superadmin) &middot; super @endif
                                 </span>
                             @empty
                                 <span class="text-xs text-slate-400">No roles</span>

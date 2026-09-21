@@ -17,7 +17,7 @@
     ['href' => '/#metrics', 'label' => 'Metrics'],
     ['href' => '/#proof', 'label' => 'Proof'],
     ['href' => '/#apply', 'label' => 'Apply'],
-]" nav-cta-href="/#apply">
+]" :nav-cta-href="route('register')">
 
     <x-slot:styles>
         .auth-section{

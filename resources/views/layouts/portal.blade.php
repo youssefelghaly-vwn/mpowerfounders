@@ -45,6 +45,14 @@
                 New upload
             </a>
 
+            {{-- Staff who also hold the client role can hop back. --}}
+            @if (auth()->user()?->isStaff())
+                <a href="{{ route('admin.dashboard') }}"
+                   class="ml-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50">
+                    Admin
+                </a>
+            @endif
+
             <form method="POST" action="{{ route('logout') }}" class="ml-2">
                 @csrf
                 <button type="submit" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900">

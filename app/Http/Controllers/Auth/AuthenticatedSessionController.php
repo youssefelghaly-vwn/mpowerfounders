@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended($this->homeFor($user));
+        return redirect()->intended($user->dashboardUrl());
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -49,11 +49,5 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
-    }
-
-    /** Staff land in the admin panel, clients in their own portal. */
-    private function homeFor(User $user): string
-    {
-        return $user->isStaff() ? route('admin.dashboard') : route('portal.dashboard');
     }
 }
