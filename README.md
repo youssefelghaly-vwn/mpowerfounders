@@ -75,6 +75,8 @@ returns 403 on the media routes.
 
 ## Storage
 
+> Full setup, production values, limits and troubleshooting: **[docs/CONFIGURATION.md](docs/CONFIGURATION.md)**.
+
 Uploads go to S3. Locally that is MinIO, which speaks the same API:
 
 ```yaml
@@ -112,6 +114,8 @@ Upload limits live in `config/media.php` (`MEDIA_MAX_UPLOAD_KB`, default 2 GB). 
 Laravel's validator.
 
 ## Email
+
+> Transport setup for local and production: **[docs/CONFIGURATION.md](docs/CONFIGURATION.md)**.
 
 Every action that changes what a client should expect sends mail. All of it goes through
 `App\Services\MailService`, which logs delivery failures rather than throwing — a dead SMTP host
