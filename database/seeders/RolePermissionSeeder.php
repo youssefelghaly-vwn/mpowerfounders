@@ -17,6 +17,13 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Manage permissions', 'slug' => 'permissions.manage', 'group' => 'permissions'],
             ['name' => 'View users', 'slug' => 'users.view', 'group' => 'users'],
             ['name' => 'Manage user roles', 'slug' => 'users.manage-roles', 'group' => 'users'],
+
+            ['name' => 'View pipeline', 'slug' => 'pipeline.view', 'group' => 'pipeline'],
+            ['name' => 'Manage pipeline', 'slug' => 'pipeline.manage', 'group' => 'pipeline'],
+            ['name' => 'View clients', 'slug' => 'clients.view', 'group' => 'clients'],
+            ['name' => 'Manage clients', 'slug' => 'clients.manage', 'group' => 'clients'],
+            ['name' => 'View projects', 'slug' => 'projects.view', 'group' => 'projects'],
+            ['name' => 'Manage projects', 'slug' => 'projects.manage', 'group' => 'projects'],
         ];
 
         foreach ($permissions as $permission) {
@@ -39,7 +46,32 @@ class RolePermissionSeeder extends Seeder
         );
 
         $viewer->permissions()->sync(
-            Permission::whereIn('slug', ['roles.view', 'permissions.view', 'users.view'])->pluck('id')
+            Permission::whereIn('slug', [
+                'roles.view', 'permissions.view', 'users.view',
+                'pipeline.view', 'clients.view', 'projects.view',
+            ])->pluck('id')
+        );
+
+        // The production team: everything needed to move work through the
+        // pipeline and talk to clients, but not to re-wire the app itself.
+        $producer = Role::updateOrCreate(
+            ['slug' => 'producer'],
+            ['name' => 'Producer', 'description' => 'Runs client projects through the production pipeline.']
+        );
+
+        $producer->permissions()->sync(
+            Permission::whereIn('slug', [
+                'pipeline.view', 'clients.view', 'clients.manage',
+                'projects.view', 'projects.manage', 'users.view',
+            ])->pluck('id')
+        );
+
+        // Clients hold no admin permissions at all — the role exists to
+        // open the /portal side of the app, and is attached the moment an
+        // account is activated (ClientService::activate()).
+        Role::updateOrCreate(
+            ['slug' => 'client'],
+            ['name' => 'Client', 'description' => 'Uploads projects and follows them through production.']
         );
     }
 }

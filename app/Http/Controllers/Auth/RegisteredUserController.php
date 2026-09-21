@@ -3,42 +3,42 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Services\ClientService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
+/**
+ * Registering here is applying, not joining: the account is created
+ * 'pending' with no role attached, so it can't sign in yet. An admin
+ * activates it from Admin -> Clients, which attaches the 'client' role and
+ * sends the welcome email (ClientService::activate()).
+ *
+ * The user is deliberately NOT logged in afterwards — there is nothing for
+ * them to do until that happens.
+ */
 class RegisteredUserController extends Controller
 {
+    public function __construct(private readonly ClientService $clients) {}
+
     public function create(): View
     {
         return view('auth.register');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+        $user = $this->clients->register($request->validated());
 
         event(new Registered($user));
 
-        Auth::login($user);
+        return redirect()->route('register.pending');
+    }
 
-        // No role is attached here — see the note in
-        // AuthenticatedSessionController::store().
-        return redirect()->route('admin.dashboard');
+    /** Standalone page so a refresh doesn't lose the confirmation. */
+    public function pending(): View
+    {
+        return view('auth.registration-pending');
     }
 }

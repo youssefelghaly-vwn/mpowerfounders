@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('layouts.app', 'app-layout');
         Blade::component('layouts.admin', 'admin-layout');
         Blade::component('layouts.guest', 'guest-layout');
+        Blade::component('layouts.portal', 'portal-layout');
 
         Gate::before(function ($user, string $ability) {
             return $user->hasPermission($ability) ?: null;
